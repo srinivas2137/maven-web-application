@@ -1,1 +1,20 @@
 
+node{
+def mavenhome=tool name : "maven3.8.2"
+
+properties([buildDiscarder(logRotator(artifactDaysToKeepStr: '', artifactNumToKeepStr: '5', daysToKeepStr: '', numToKeepStr: '5')), [$class: 'JobLocalConfiguration', changeReasonComment: ''], pipelineTriggers([githubPush()])])
+    stage("CheckOutCode"){
+       git branch: 'development ', credentialsId: '2f58c59c-8e20-4add-aef4-69248fb53c0c', url: 'https://github.com/srinivas2137/maven-web-application.git'
+    }
+    stage("Build"){
+        sh "${mavenhome}/bin/mvn clean package"
+    }
+    /*stage("UploadArtifactsIntoNexesRepo"){
+        sh "${mavenhome}/bin/mvn deploy"
+    }
+    stage("DeplyIntoTomCatServer"){
+        sshagent(['d8631dce-6412-40dc-98e9-df58c0704a18']) {
+        sh "scp -o StrictHostKeyChecking=no  target/maven-web-application.war ec2-user@65.1.110.172:/opt/apache-tomcat-9.0.54/webapps"
+      }
+    }*/
+}
